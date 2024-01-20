@@ -1,0 +1,43 @@
+# Javascript Node CircleCI 2.0 configuration file
+# Check https://circleci.com/docs/2.0/ for more details
+
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:dubnium
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-v1-{{ checksum "yarn.lock" }}
+            - yarn-v1-
+      - run:
+          name: Install NPM modules
+          command: |
+            yarn cache dir
+            yarn install --frozen-lockfile
+            yarn add firebase-tools
+            yarn run firebase --version
+      - save_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn/v1
+      - run:
+          name: Build
+          command: |
+            yarn relay --watchman=false
+            yarn build
+      - run:
+          name: Test
+          command: |
+            yarn lint
+            yarn test --forceExit
+      # - run:
+      #     name: Deploy
+      #     command: |
+      #       if [ "${CIRCLE_BRANCH}" == "master" ]; then
+      #         yarn run firebase use dev
+      #         yarn run firebase deploy --token=$FIREBASE_TOKEN
+      #       fi

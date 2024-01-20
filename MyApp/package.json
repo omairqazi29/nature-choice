@@ -1,0 +1,122 @@
+{
+  "name": "app",
+  "version": "0.0.0",
+  "private": true,
+  "main": "build/server.js",
+  "engines": {
+    "node": "10"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "dependencies": {
+    "@babel/polyfill": "^7.7.0",
+    "@babel/runtime": "^7.7.7",
+    "@firebase/app": "^0.5.1",
+    "@firebase/auth": "^0.13.4",
+    "@material-ui/core": "^4.8.3",
+    "@material-ui/icons": "^4.5.1",
+    "body-parser": "^1.19.0",
+    "clsx": "^1.0.4",
+    "cookie": "^0.4.0",
+    "cookie-parser": "^1.4.4",
+    "dataloader": "^2.0.0",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "express-graphql": "^0.9.0",
+    "firebase-admin": "^8.9.0",
+    "firebase-functions": "^3.3.0",
+    "got": "^10.2.2",
+    "graphql": "^14.5.8",
+    "graphql-relay": "^0.6.0",
+    "history": "^4.10.1",
+    "hoist-non-react-statics": "^3.3.1",
+    "idx": "^2.5.6",
+    "jsonwebtoken": "^8.5.1",
+    "jwt-passport": "^0.0.5",
+    "knex": "^0.20.7",
+    "load-script": "^1.0.0",
+    "lodash": "^4.17.15",
+    "moment-timezone": "^0.5.27",
+    "passport": "^0.4.1",
+    "passport-facebook": "^3.0.0",
+    "passport-google-oauth20": "^2.0.0",
+    "pg": "^7.17.0",
+    "prop-types": "^15.7.2",
+    "query-string": "^6.9.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-relay": "^8.0.0",
+    "recompose": "^0.30.0",
+    "relay-runtime": "^8.0.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.8",
+    "serialize-javascript": "^2.1.2",
+    "slugify": "^1.3.6",
+    "universal-router": "^8.3.0",
+    "uuid": "^3.3.3",
+    "validator": "^12.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/register": "^7.7.7",
+    "babel-plugin-lodash": "^3.3.4",
+    "babel-plugin-relay": "^8.0.0",
+    "chai": "^4.2.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.0.4",
+    "lint-staged": "^9.5.0",
+    "minimist": "^1.2.0",
+    "prettier": "^1.19.1",
+    "raw-loader": "^4.0.0",
+    "react-app-tools": "^3.1.0-preview.7",
+    "relay-compiler": "^8.0.0"
+  },
+  "lint-staged": {
+    "*.js": [
+      "yarn run eslint --no-ignore --fix --max-warnings=0",
+      "yarn run prettier --write",
+      "git add --force"
+    ],
+    "*.json": [
+      "prettier --write",
+      "git add --force"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "scripts": {
+    "setup": "node ./scripts/setup",
+    "update-schema": "node ./scripts/update-schema",
+    "relay": "relay-compiler --src ./src --schema ./schema.graphql",
+    "prestart": "yarn relay",
+    "start": "react-app start",
+    "build": "react-app build",
+    "test": "react-app test",
+    "lint": "eslint --ignore-path .gitignore --ignore-pattern \"!**/.*\" .",
+    "lint-fix": "eslint --ignore-path .gitignore --ignore-pattern \"!**/.*\" --fix . && yarn run prettier --write \"**/*.{js,json}\"",
+    "db-backup": "node ./scripts/db-backup",
+    "db-restore": "node ./scripts/db-restore",
+    "db-change": "knex migrate:make",
+    "db-migrate": "knex migrate:latest",
+    "db-rollback": "knex migrate:rollback",
+    "db-seed": "knex seed:run",
+    "db-version": "knex migrate:currentVersion",
+    "db-reset-dev": "yarn db-rollback --env=dev && yarn db-migrate --env=dev && yarn db-restore --env=dev",
+    "db-reset-test": "yarn db-rollback --env=test && yarn db-migrate --env=test && yarn db-restore --env=test",
+    "db-reset-prod": "yarn db-rollback --env=prod && yarn db-migrate --env=prod && yarn db-restore --env=prod",
+    "db": "node --experimental-repl-await ./scripts/db",
+    "psql": "node ./scripts/psql",
+    "deploy": "yarn run deploy-test",
+    "deploy-test": "node ./scripts/pre-deploy --env=test && firebase --project=example-test deploy && node ./scripts/post-deploy --env=test",
+    "deploy-prod": "node ./scripts/pre-deploy --env=prod && firebase --project=example-prod deploy && node ./scripts/post-deploy --env=prod"
+  }
+}
