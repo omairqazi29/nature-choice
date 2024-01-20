@@ -1,0 +1,122 @@
+{
+  "name": "react-app-tools",
+  "version": "3.1.0-preview.7",
+  "description": "Build and test tooling for web application development with Node.js and React.",
+  "repository": "kriasoft/react-app",
+  "author": "Kriasoft <hello@kriasoft.com> (https://www.kriasoft.com)",
+  "contributors": [
+    "Konstantin Tarkus <hello@tarkus.me> (https://tarkus.me)"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "reactjs",
+    "react.js",
+    "server rendering",
+    "server-rendering",
+    "server-side rendering",
+    "server side rendering",
+    "pre-render",
+    "prerender",
+    "ssr"
+  ],
+  "engines": {
+    "node": ">=8.10"
+  },
+  "bugs": {
+    "url": "https://github.com/kriasoft/react-app/issues"
+  },
+  "files": [
+    "bin",
+    "config",
+    "lib",
+    "scripts",
+    "template",
+    "template-typescript",
+    "utils",
+    "WebpackDevServerUtils.js"
+  ],
+  "bin": {
+    "react-app": "./bin/react-app.js"
+  },
+  "types": "./lib/react-app.d.ts",
+  "dependencies": {
+    "@babel/core": "7.2.2",
+    "@babel/plugin-proposal-class-properties": "7.3.0",
+    "@babel/plugin-proposal-decorators": "7.3.0",
+    "@babel/plugin-proposal-object-rest-spread": "7.3.2",
+    "@babel/plugin-syntax-dynamic-import": "7.2.0",
+    "@babel/plugin-transform-classes": "7.2.2",
+    "@babel/plugin-transform-destructuring": "7.3.2",
+    "@babel/plugin-transform-flow-strip-types": "7.2.3",
+    "@babel/plugin-transform-react-constant-elements": "7.2.0",
+    "@babel/plugin-transform-react-display-name": "7.2.0",
+    "@babel/plugin-transform-runtime": "7.2.0",
+    "@babel/preset-env": "7.3.1",
+    "@babel/preset-react": "7.0.0",
+    "@babel/preset-typescript": "7.1.0",
+    "@babel/runtime": "7.3.1",
+    "@svgr/webpack": "4.1.0",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-eslint": "9.0.0",
+    "babel-jest": "23.6.0",
+    "babel-loader": "8.0.5",
+    "babel-plugin-dynamic-import-node": "2.2.0",
+    "babel-plugin-macros": "2.5.0",
+    "babel-plugin-named-asset-import": "^0.3.1",
+    "babel-plugin-transform-dynamic-import": "2.1.0",
+    "babel-plugin-transform-react-remove-prop-types": "0.4.24",
+    "bfj": "6.1.1",
+    "case-sensitive-paths-webpack-plugin": "2.2.0",
+    "css-loader": "1.0.0",
+    "dotenv": "6.0.0",
+    "dotenv-expand": "4.2.0",
+    "eslint": "5.12.0",
+    "eslint-config-react-app": "^3.0.8",
+    "eslint-loader": "2.1.1",
+    "eslint-plugin-flowtype": "2.50.1",
+    "eslint-plugin-import": "2.14.0",
+    "eslint-plugin-jsx-a11y": "6.1.2",
+    "eslint-plugin-react": "7.12.4",
+    "file-loader": "2.0.0",
+    "fs-extra": "7.0.1",
+    "identity-obj-proxy": "3.0.0",
+    "jest": "23.6.0",
+    "jest-pnp-resolver": "1.0.2",
+    "jest-resolve": "23.6.0",
+    "jest-watch-typeahead": "^0.2.1",
+    "mini-css-extract-plugin": "0.5.0",
+    "optimize-css-assets-webpack-plugin": "5.0.1",
+    "pnp-webpack-plugin": "1.2.1",
+    "postcss-flexbugs-fixes": "4.1.0",
+    "postcss-loader": "3.0.0",
+    "postcss-preset-env": "6.5.0",
+    "postcss-safe-parser": "4.0.1",
+    "react-app-polyfill": "^0.2.2",
+    "react-dev-utils": "^8.0.0",
+    "resolve": "1.10.0",
+    "sass-loader": "7.1.0",
+    "style-loader": "0.23.1",
+    "terser-webpack-plugin": "1.2.2",
+    "url-loader": "1.1.2",
+    "webpack": "4.28.3",
+    "webpack-dev-server": "3.1.14",
+    "webpack-manifest-plugin": "2.0.4",
+    "webpack-node-externals": "^1.7.2",
+    "write-file-webpack-plugin": "^4.5.0",
+    "workbox-webpack-plugin": "3.6.3"
+  },
+  "devDependencies": {
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2"
+  },
+  "optionalDependencies": {
+    "fsevents": "1.2.4"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

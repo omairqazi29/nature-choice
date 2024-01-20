@@ -1,0 +1,39 @@
+{
+    "name": "snakeize",
+    "version": "0.1.0",
+    "description": "recursively transform key strings from camel-case to underscore-style",
+    "main": "index.js",
+    "devDependencies": {
+        "tap": "~0.4.0",
+        "tape": "~0.3.0"
+    },
+    "scripts": {
+        "test": "tap test/*.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/nathan7/snakeize.git"
+    },
+    "homepage": "https://github.com/nathan7/snakeize",
+    "keywords": [
+        "snake-case",
+        "json",
+        "transform"
+    ],
+    "testling" : {
+        "files" : "test/*.js",
+        "browsers" : {
+            "iexplore" : [ "6.0", "7.0", "8.0", "9.0" ],
+            "chrome" : [ "20.0" ],
+            "firefox" : [ "10.0", "15.0" ],
+            "safari" : [ "5.1" ],
+            "opera" : [ "12.0" ]
+        }
+    },
+    "author": {
+        "name": "James Halliday",
+        "email": "mail@substack.net",
+        "url": "http://substack.net"
+    },
+    "license": "MIT"
+}
