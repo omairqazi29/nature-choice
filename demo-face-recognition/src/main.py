@@ -46,25 +46,25 @@ captured_esg = ""
 #         print(res_json['data']['url'])
 
 def on_action_captured_image(state, id, action, payload):
-    choice = payload["args"][0]
-    if choice == 0:
-         # Add image to training data:
-        img = state.captured_image
-        file_name = str(uuid.uuid4()) + ".jpg"
-        # label = state.captured_label
-        image_path = Path(training_data_folder, file_name)
-        with image_path.open("wb") as f:
-            file_path = f.name
-            f.write(img)
-
-        label_file_path = Path(training_data_folder, "data.csv")
-        with label_file_path.open("a") as f:
-            f.write(f"{file_name},{label}\n")
-
     state.captured_image = None
     state.captured_brand = ""
     state.captured_esg = ""
     state.show_capture_dialog = False
+
+    # choice = payload["args"][0]
+    # if choice == 0:
+    #      # Add image to training data:
+    #     img = state.captured_image
+    #     file_name = str(uuid.uuid4()) + ".jpg"
+    #     # label = state.captured_label
+    #     # image_path = Path(training_data_folder, file_name)
+    #     # with image_path.open("wb") as f:
+    #     #     # file_path = f.name
+    #     #     f.write(img)
+
+        # label_file_path = Path(training_data_folder, "data.csv")
+        # with label_file_path.open("a") as f:
+        #     f.write(f"{file_name},{label}\n")
 
 
 
