@@ -55,7 +55,7 @@ def process_image(state, frame):
         labeled_images.append((img, rect, label))
 
     # Return this to the UI component so that it can display a rect around recognized faces:
-    state.labeled_faces = [str([*rect, label]) for (_, rect, label) in labeled_images]
+    # state.labeled_faces = [str([*rect, label]) for (_, rect, label) in labeled_images]
 
     # Capture image (actually we consider only the first detected face)
     if state.capture_image and len(labeled_images) > 0:

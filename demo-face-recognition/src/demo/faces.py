@@ -33,7 +33,9 @@ def detect_faces(image):
     if len(detected_faces) == 0:
         return []
 
-    return [(rect, crop_image(image, rect)) for rect in detected_faces]
+    # commented this out since we don't want a cropped image 
+    # return [(rect, crop_image(image, rect)) for rect in detected_faces]
+    return [(rect, image) for rect in detected_faces]
 
 
 def recognize_face(image):
