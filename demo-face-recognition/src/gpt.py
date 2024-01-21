@@ -1,13 +1,17 @@
 import base64
+import os
 
 import requests
 from openai import OpenAI
 
-api_key = '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'
-client = OpenAI(api_key=api_key)
+from dotenv import load_dotenv
+
+load_dotenv()
+openai_api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=openai_api_key)
 
 # Set your OpenAI API key here
-#image_path = "./test.jpg"
+image_path = "./test.jpg"
 
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
