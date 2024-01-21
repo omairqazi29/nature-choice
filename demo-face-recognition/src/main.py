@@ -136,22 +136,21 @@ def button_retrain_clicked(state):
     train_face_recognizer(training_data_folder)
 
 
-webcam_md = """<|toggle|theme|>
+webcam_md = """<|toggle|theme|id=main_bg|>
 
 <container|container|part|
 
-# Face **recognition**{: .color-primary}
+# **Nature's**{: .title} **Choice**{: .alt-title}
 
-This demo shows how to use [Taipy](https://taipy.io/) with a [custom GUI component](https://docs.taipy.io/en/latest/manuals/gui/extension/) to capture video from your webcam and do realtime face detection. What this application demonstrates:
+A lightweight, intuitive, and user-friendly website designed to facilitate eco-friendly decision-making.
+{: .slogan}
 
-- How to build a complex custom UI component for Taipy.
-
-- How to detect and recognize faces in the image in real time using [OpenCV](https://opencv.org/).
+Make the right choice, make *Nature's* ***Choice**{: .alt-title}*
 
 <br/>
 
-<card|card p-half|part|
-## **Webcam**{: .color-primary} component
+<card|card p-half|part|id=cam_card|
+## **Webcam**{: .sub_title} component
 
 <|text-center|part|
 <|webcam.Webcam|faces={labeled_faces}|classname=face_detector|id=my_face_detector|on_data_receive=handle_image|sampling_rate=100|>
@@ -177,7 +176,12 @@ if __name__ == "__main__":
         training_data_folder.mkdir()
 
     train_face_recognizer(training_data_folder)
-
+    my_theme = {
+        "palette": {
+            "background": {"default": "#002626"},
+            "primary": {"main": "#0e4749"},
+        }
+    }
     gui = Gui(webcam_md)
     gui.add_library(Webcam())
-    gui.run(port=9090)
+    gui.run(port=9090, theme=my_theme)
