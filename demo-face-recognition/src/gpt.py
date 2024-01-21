@@ -3,7 +3,7 @@ import base64
 import requests
 from openai import OpenAI
 
-api_key = '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'
+api_key = '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'
 client = OpenAI(api_key=api_key)
 
 # Set your OpenAI API key here

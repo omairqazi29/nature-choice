@@ -13,6 +13,9 @@ from demo.faces import detect_faces, recognize_face, train_face_recognizer
 import base64
 import requests
 
+from esg_db import *
+from gpt import *
+
 #logging.basicConfig(level=logging.DEBUG)
 
 training_data_folder = Path("images")
@@ -24,7 +27,8 @@ show_add_captured_images_dialog = False
 labeled_faces = []  # Contains rect with label (for UI component)
 
 captured_image = None
-captured_label = ""
+captured_brand = ""
+captured_esg = ""
 
 width = 0
 height = 0
@@ -46,40 +50,45 @@ def upload_picture(img_file):
 
 def on_action_captured_image(state, id, action, payload):
     # making sure the variables we update are the global ones
-    global width
-    global height 
-
-    #print("Captured image")
-    choice = payload["args"][0]
-    if choice == 0:
-        # Add image to training data:
-        img = state.captured_image
-        file_name = str(uuid.uuid4()) + ".jpg"
-        label = state.captured_label
-        image_path = Path(training_data_folder, file_name)
-        with image_path.open("wb") as f:
-            file_path = f.name
-            f.write(img)
-            upload_picture(file_path)
-            print(file_path)
-            try:
-                img_ = PIL.Image.open(file_path)
-                width = img_.width
-                height = img_.height
-            except Exception as e:
-                print("Could not open file")
-
-
-        label_file_path = Path(training_data_folder, "data.csv")
-        with label_file_path.open("a") as f:
-            f.write(f"{file_name},{label}\n")
-
+    # global width
+    # global height
+    #
+    # #print("Captured image")
+    # choice = payload["args"][0]
+    # if choice == 0:
+    #     # Add image to training data:
+    #     img = state.captured_image
+    #     file_name = str(uuid.uuid4()) + ".jpg"
+    #     label = state.captured_label
+    #     image_path = Path(training_data_folder, file_name)
+    #     with image_path.open("wb") as f:
+    #         file_path = f.name
+    #         f.write(img)
+    #         upload_picture(file_path)
+    #         print(file_path)
+    #         try:
+    #             img_ = PIL.Image.open(file_path)
+    #             width = img_.width
+    #             height = img_.height
+    #         except Exception as e:
+    #             print("Could not open file")
+    #
+    #
+    #     label_file_path = Path(training_data_folder, "data.csv")
+    #     with label_file_path.open("a") as f:
+    #         f.write(f"{file_name},{label}\n")
+    #
     state.captured_image = None
-    state.captured_label = ""
+    state.captured_brand = ""
+    state.captured_esg = ""
     state.show_capture_dialog = False
+    #
+    # print(width)
+    # print(height)
+    #
+    # # brand = get_brand(image_path)
+    # # print(brand, find_esg_value_by_name(brand))
 
-    print(width)
-    print(height)
 
 
 def process_image(state, frame):
@@ -101,9 +110,32 @@ def process_image(state, frame):
         label = labeled_images[0][2]
         state.captured_image = cv2.imencode(".jpg", img)[1].tobytes()
         # state.captured_image = cv2.imencode(".jpg", img)[1].tobytes()
-        state.captured_label = label
+        # state.captured_label = label
         state.show_capture_dialog = True
         state.capture_image = False
+
+        #Somewhere here
+        img = state.captured_image
+        file_name = str(uuid.uuid4()) + ".jpg"
+        label = state.captured_brand
+        image_path = Path(training_data_folder, file_name)
+        with image_path.open("wb") as f:
+            file_path = f.name
+            f.write(img)
+            upload_picture(file_path)
+            print(file_path)
+            try:
+                img_ = PIL.Image.open(file_path)
+                width = img_.width
+                height = img_.height
+            except Exception as e:
+                print("Could not open file")
+
+        label_file_path = Path(training_data_folder, "data.csv")
+        with label_file_path.open("a") as f:
+            f.write(f"{file_name},{label}\n")
+        state.captured_brand = get_brand(image_path)
+        print(captured_brand, find_esg_value_by_name(captured_brand))
 
 
 def handle_image(state, action, args, value):
@@ -161,21 +193,19 @@ Make the right choice, make *Nature's* ***Choice**{: .alt-title}*
 |card>
 |container>
 
-
-<|{show_capture_dialog}|dialog|labels=Validate;Cancel|on_action=on_action_captured_image|title=Add new training image|
+<|{show_capture_dialog}|dialog|labels=Validate;Cancel|on_action=on_action_captured_image|title=Results|
 <|{captured_image}|image|width=300px|height=300px|>
 
-<|{captured_label}|input|>
+<|{captured_brand}{captured_esg}|label|>
 |>
 """
-
 
 if __name__ == "__main__":
     # Create dir where the pictures will be stored
     if not training_data_folder.exists():
         training_data_folder.mkdir()
 
-    train_face_recognizer(training_data_folder)
+    #train_face_recognizer(training_data_folder)
     my_theme = {
         "palette": {
             "background": {"default": "#002626"},
