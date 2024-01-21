@@ -198,6 +198,7 @@ Make the right choice, make *Nature's* ***Choice**{: .alt-title}*
 <|{captured_image}|image|width=300px|height=300px|>
 
 <|{captured_brand}{captured_esg}|input|>
+<|{captured_esg}|label|>
 |>
 """
 
@@ -215,4 +216,4 @@ if __name__ == "__main__":
     }
     gui = Gui(webcam_md)
     gui.add_library(Webcam())
-    gui.run(port=9090, theme=my_theme)
+    gui.run(port=9090, theme=my_theme, ngrok_token='<ngrok here')
