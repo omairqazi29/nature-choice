@@ -4,7 +4,7 @@ import re
 
 from openai import OpenAI
 
-client = OpenAI(api_key='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')
+client = OpenAI(api_key='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')
 
 # Set your OpenAI API key here
 image_path = "./test.jpg"
