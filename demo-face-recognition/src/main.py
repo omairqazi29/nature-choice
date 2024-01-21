@@ -96,9 +96,11 @@ def process_image(state, frame):
 
     # Capture image (actually we consider only the first detected face)
     if state.capture_image and len(labeled_images) > 0:
+        # print(labeled_images[0][0])
         img = labeled_images[0][0]
         label = labeled_images[0][2]
         state.captured_image = cv2.imencode(".jpg", img)[1].tobytes()
+        # state.captured_image = cv2.imencode(".jpg", img)[1].tobytes()
         state.captured_label = label
         state.show_capture_dialog = True
         state.capture_image = False
@@ -115,7 +117,11 @@ def handle_image(state, action, args, value):
     # Write Data into temp file (OpenCV is unable to load from memory)
     image = PIL.Image.open(io.BytesIO(bytes))
     image.save(temp_path)
-    # Load image file
+    image_path = Path(training_data_folder, 'test')
+    with image_path.open("wb") as f:
+        f.write(image.tobytes())
+
+# Load image file
     try:
         img = cv2.imread(temp_path, cv2.IMREAD_UNCHANGED)
     except cv2.error as e:
