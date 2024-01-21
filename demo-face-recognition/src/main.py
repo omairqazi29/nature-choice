@@ -8,7 +8,7 @@ import io
 import logging
 import uuid
 from pathlib import Path
-from demo.faces import detect_faces, recognize_face, train_face_recognizer
+#from demo.faces import detect_faces, recognize_face, train_face_recognizer
 
 import base64
 import requests
@@ -45,41 +45,41 @@ captured_esg = ""
 #         res_json = res.json()
 #         print(res_json['data']['url'])
 
-# def trim_black_bars(image_path):
-#     # Open the image
-#     img = PIL.Image.open(image_path)
-#
-#     # Get the original dimensions
-#     original_width, original_height = img.size
-#
-#     # Find the color of the bottom-right pixel (usually the background color)
-#     background_color = img.getpixel((original_width - 1, original_height - 1))
-#
-#     # Initialize the new dimensions to the original dimensions
-#     new_width = original_width
-#     new_height = original_height
-#
-#     # Trim black bars from the right
-#     for x in range(original_width - 1, -1, -1):
-#         y = 0
-#         if all(img.getpixel((x, y)) == background_color for y in range(original_height)):
-#             new_width -= 1
-#         else:
-#             break
-#
-#     # Trim black bars from the bottom
-#     for y in range(original_height - 1, -1, -1):
-#         x = 0
-#         if all(img.getpixel((x, y)) == background_color for x in range(original_width)):
-#             new_height -= 1
-#         else:
-#             break
-#
-#     # Crop the image to remove the black bars
-#     cropped_img = img.crop((0, 0, new_width, new_height))
-#
-#     # Save the resized image
-#     cropped_img.save(image_path)
+def trim_black_bars(image_path):
+    # Open the image
+    img = PIL.Image.open(image_path)
+
+    # Get the original dimensions
+    original_width, original_height = img.size
+
+    # Find the color of the bottom-right pixel (usually the background color)
+    background_color = img.getpixel((original_width - 1, original_height - 1))
+
+    # Initialize the new dimensions to the original dimensions
+    new_width = original_width
+    new_height = original_height
+
+    # Trim black bars from the right
+    for x in range(original_width - 1, -1, -1):
+        y = 0
+        if all(img.getpixel((x, y)) == background_color for y in range(original_height)):
+            new_width -= 1
+        else:
+            break
+
+    # Trim black bars from the bottom
+    for y in range(original_height - 1, -1, -1):
+        x = 0
+        if all(img.getpixel((x, y)) == background_color for x in range(original_width)):
+            new_height -= 1
+        else:
+            break
+
+    # Crop the image to remove the black bars
+    cropped_img = img.crop((0, 0, new_width, new_height))
+
+    # Save the resized image
+    cropped_img.save(image_path)
 
 def on_action_captured_image(state, id, action, payload):
     choice = payload["args"][0]
@@ -106,23 +106,25 @@ def on_action_captured_image(state, id, action, payload):
 
 def process_image(state, frame):
     #print("Processing image...")
-    found = detect_faces(frame)
-
-    labeled_images = []
-    for rect, img in found:
-        (label, _) = recognize_face(img)
-        labeled_images.append((img, rect, label))
+    # found = detect_faces(frame)
+    #
+    # labeled_images = []
+    # for rect, img in found:
+    #     (label, _) = recognize_face(img)
+    #     labeled_images.append((img, rect, label))
 
     # Return this to the UI component so that it can display a rect around recognized faces:
     # state.labeled_faces = [str([*rect, label]) for (_, rect, label) in labeled_images]
 
     # Capture image (actually we consider only the first detected face)
-    if state.capture_image and len(labeled_images) > 0:
+    # if state.capture_image and len(labeled_images) > 0:
+    if state.capture_image:
         # print(labeled_images[0][0])
-        img = labeled_images[0][0]
-        label = labeled_images[0][2]
+        # img = labeled_images[0][0]
+        img = frame
+        # label = labeled_images[0][2]
         state.captured_image = cv2.imencode(".jpg", img)[1].tobytes()
-        # state.captured_label = label
+        #state.captured_brand = label
         state.show_capture_dialog = True
         state.capture_image = False
 
@@ -164,20 +166,22 @@ def handle_image(state, action, args, value):
     # Finish. Tempfile is removed.
 
 
-def button_retrain_clicked(state):
+#def button_retrain_clicked(state):
     #print("Retraining...")
-    train_face_recognizer(training_data_folder)
+    #train_face_recognizer(training_data_folder)
 
 #<|toggle|theme|id=main_bg|>
 
-webcam_md = """<container|container|part|
+webcam_md = """
+<container|container|part|
 
 # **Nature's**{: .title} **Choice**{: .alt-title}
+<|{"./images/nature.png"}|image|class_name=item|>
 
-A lightweight, intuitive, and user-friendly website designed to facilitate eco-friendly decision-making.
+A lightweight, intuitive, and user friendly website designed to facilitate eco-friendly decision making.
 {: .slogan}
 
-Make the right choice, make *Nature's* ***Choice**{: .second-slogan}*
+Make the right choice, make *Nature's* ***Choice**{: .alt-title}*
 
 <br/>
 
@@ -186,6 +190,7 @@ Make the right choice, make *Nature's* ***Choice**{: .second-slogan}*
 ## **Scan Product**{: .sub_title}
 >
 <|text-center|part|
+
 <|webcam.Webcam|faces={labeled_faces}|classname=face_detector|id=my_face_detector|on_data_receive=handle_image|sampling_rate=100|>
 
 <|Capture|button|on_action={lambda s: s.assign("capture_image", True)}|>
@@ -193,7 +198,7 @@ Make the right choice, make *Nature's* ***Choice**{: .second-slogan}*
 |card>
 |container>
 
-<|{show_capture_dialog}|dialog|labels=Validate;Cancel|on_action=on_action_captured_image|title=Results|
+<|{show_capture_dialog}|dialog|labels=OK|class=custom-label|on_action=on_action_captured_image|title= Sustainability Score|
 <|{captured_image}|image|width=300px|height=300px|>
 
 <|Product: {captured_brand}|text|>
@@ -201,7 +206,6 @@ Make the right choice, make *Nature's* ***Choice**{: .second-slogan}*
 <|Nature Score: {captured_esg}|text|>
 |>
 """
-#<|RE-train|button|on_action=button_retrain_clicked|>
 
 if __name__ == "__main__":
     # Create dir where the pictures will be stored
