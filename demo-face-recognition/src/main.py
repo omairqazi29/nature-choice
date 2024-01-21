@@ -203,17 +203,16 @@ def button_retrain_clicked(state):
     #print("Retraining...")
     train_face_recognizer(training_data_folder)
 
+#<|toggle|theme|id=main_bg|>
 
-webcam_md = """<|toggle|theme|id=main_bg|>
-
-<container|container|part|
+webcam_md = """<container|container|part|
 
 # **Nature's**{: .title} **Choice**{: .alt-title}
 
 A lightweight, intuitive, and user-friendly website designed to facilitate eco-friendly decision-making.
 {: .slogan}
 
-Make the right choice, make *Nature's* ***Choice**{: .alt-title}*
+Make the right choice, make *Nature's* ***Choice**{: .second-slogan}*
 
 <br/>
 

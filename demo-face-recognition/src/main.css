@@ -6,6 +6,8 @@
 
 .title {
     color: #EFE7DA;
+	margin: auto;
+	width: 50%;
 }
 
 .slogan {
@@ -14,6 +16,8 @@
 
 .alt-title {
     color: #95c623;
+	margin: auto;
+	width: 50%;
 }
 
 .sub_title {
