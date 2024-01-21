@@ -140,7 +140,7 @@ webcam_md = """
 <container|container|part|
 
 # **Nature's**{: .title} **Choice**{: .alt-title}
-<|{"./images/nature.png"}|image|class_name=item|>
+<|{"./nature.png"}|image|class_name=item|>
 
 A lightweight, intuitive, and user friendly website designed to facilitate eco-friendly decision making.
 {: .slogan}
