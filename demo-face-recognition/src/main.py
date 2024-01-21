@@ -2,7 +2,6 @@ from taipy.gui import Gui
 from webcam import Webcam
 from pathlib import Path
 import cv2
-
 import PIL.Image
 import io
 
@@ -27,6 +26,8 @@ labeled_faces = []  # Contains rect with label (for UI component)
 captured_image = None
 captured_label = ""
 
+width = 0
+height = 0
 
 # uploads the picture to a server so open ai can work with it
 def upload_picture(img_file):
@@ -44,7 +45,11 @@ def upload_picture(img_file):
         print(res_json['data']['url'])
 
 def on_action_captured_image(state, id, action, payload):
-    print("Captured image")
+    # making sure the variables we update are the global ones
+    global width
+    global height 
+
+    #print("Captured image")
     choice = payload["args"][0]
     if choice == 0:
         # Add image to training data:
@@ -56,6 +61,14 @@ def on_action_captured_image(state, id, action, payload):
             file_path = f.name
             f.write(img)
             upload_picture(file_path)
+            print(file_path)
+            try:
+                img_ = PIL.Image.open(file_path)
+                width = img_.width
+                height = img_.height
+            except Exception as e:
+                print("Could not open file")
+
 
         label_file_path = Path(training_data_folder, "data.csv")
         with label_file_path.open("a") as f:
@@ -65,9 +78,12 @@ def on_action_captured_image(state, id, action, payload):
     state.captured_label = ""
     state.show_capture_dialog = False
 
+    print(width)
+    print(height)
+
 
 def process_image(state, frame):
-    print("Processing image...")
+    #print("Processing image...")
     found = detect_faces(frame)
 
     labeled_images = []
@@ -89,10 +105,10 @@ def process_image(state, frame):
 
 
 def handle_image(state, action, args, value):
-    print("Handling image...")
+    #print("Handling image...")
     payload = value["args"][0]
     bytes = payload["data"]
-    logging.debug(f"Received data: {len(bytes)}")
+    #logging.debug(f"Received data: {len(bytes)}")
 
     temp_path = "temp.png"
 
@@ -103,14 +119,14 @@ def handle_image(state, action, args, value):
     try:
         img = cv2.imread(temp_path, cv2.IMREAD_UNCHANGED)
     except cv2.error as e:
-        logging.error(f"Failed to read image file: {e}")
+        #logging.error(f"Failed to read image file: {e}")
         return
     process_image(state, img)
     # Finish. Tempfile is removed.
 
 
 def button_retrain_clicked(state):
-    print("Retraining...")
+    #print("Retraining...")
     train_face_recognizer(training_data_folder)
 
 
@@ -147,6 +163,7 @@ This demo shows how to use [Taipy](https://taipy.io/) with a [custom GUI compone
 <|{captured_label}|input|>
 |>
 """
+
 
 if __name__ == "__main__":
     # Create dir where the pictures will be stored
