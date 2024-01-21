@@ -1,5 +1,6 @@
 from taipy.gui import Gui
 from webcam import Webcam
+from pathlib import Path
 import cv2
 
 import PIL.Image
@@ -8,21 +9,39 @@ import io
 import logging
 import uuid
 from pathlib import Path
+from demo.faces import detect_faces, recognize_face, train_face_recognizer
 
-from serpapi import GoogleSearch
+import base64
+import requests
 
-from sp_api.api import Catalog
-from sp_api.base import Marketplaces
-
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
 training_data_folder = Path("images")
 
 show_capture_dialog = False
 capture_image = False
+show_add_captured_images_dialog = False
+
+labeled_faces = []  # Contains rect with label (for UI component)
 
 captured_image = None
+captured_label = ""
 
+
+# uploads the picture to a server so open ai can work with it
+def upload_picture(img_file):
+    print(img_file)
+    with open(img_file, "rb") as file:
+        url = "https://api.imgbb.com/1/upload"
+        payload = {
+            "expiry": 600,
+            "key": 'aeee233388a1e3d25fc67e1266807b69',
+            "image": base64.b64encode(file.read()),
+        }
+
+        res = requests.post(url, payload)
+        res_json = res.json()
+        print(res_json['data']['url'])
 
 def on_action_captured_image(state, id, action, payload):
     print("Captured image")
@@ -31,45 +50,44 @@ def on_action_captured_image(state, id, action, payload):
         # Add image to training data:
         img = state.captured_image
         file_name = str(uuid.uuid4()) + ".jpg"
+        label = state.captured_label
         image_path = Path(training_data_folder, file_name)
         with image_path.open("wb") as f:
+            file_path = f.name
             f.write(img)
-            getBrand(getASIN(file_name))
+            upload_picture(file_path)
+
+        label_file_path = Path(training_data_folder, "data.csv")
+        with label_file_path.open("a") as f:
+            f.write(f"{file_name},{label}\n")
 
     state.captured_image = None
+    state.captured_label = ""
     state.show_capture_dialog = False
 
-def getASIN(file):
-    params = {
-    "engine": "google_lens",
-    "url": "https://i.imgur.com/Jydn4Wb.jpeg",
-    "api_key": "1e24556cfe05605f06f5fec311156615979876f6e1d3e9de4be1f6b9c39d7e35"
-    }
 
-    search = GoogleSearch(params)
-    results = search.get_dict()
-    knowledge_graph = results["knowledge_graph"]
+def process_image(state, frame):
+    print("Processing image...")
+    found = detect_faces(frame)
 
-    amazon_link = None
-    for web in data["knowledge_graph"][0]["shopping_results"]:
-        if "amazon" in web["source"].lower(): \
-        amazon_link = web["link"]
-        break
+    labeled_images = []
+    for rect, img in found:
+        (label, _) = recognize_face(img)
+        labeled_images.append((img, rect, label))
 
-    asin = amazon_link.split('/dp/')[-1] if amazon_link else None
+    # Return this to the UI component so that it can display a rect around recognized faces:
+    # state.labeled_faces = [str([*rect, label]) for (_, rect, label) in labeled_images]
 
-    return asin
+    # Capture image (actually we consider only the first detected face)
+    if state.capture_image and len(labeled_images) > 0:
+        img = labeled_images[0][0]
+        label = labeled_images[0][2]
+        state.captured_image = cv2.imencode(".jpg", img)[1].tobytes()
+        state.captured_label = label
+        state.show_capture_dialog = True
+        state.capture_image = False
 
-def getBrand(asin):
-    credentials = dict(
-        refresh_token='Atzr|IwEBIIpVxgboyA6VhQqRnFSdocT4CgCzS85nr0KMt53T-moCph8akQbg-z9Ckrk3NNF4iyaRS8vIajYRiCSA1bTtTjaeGU9zdQaUVzIMHvEUtUIa6x-ZhvXc5KAhICp33vCo8dbTT_nVvOG1IS6RYFXMMpGeBHriVmIQne6Losv26DKYTzO54bRvxnE8X3NpzpB7H73qcgzM1_KslROGqUcF-qGJ_rsuNp4On5zskdml4LinKsGkWo3R9uK2QTqW6yGz8WP9jpJNq74t8xAHiNOqHqu8kTxFd1raLj9YzntZJls20ERz8GpFoGu8c8s0PfOwi_-MRV7XvSvWFT3oB1lBVtmi',
-        lwa_app_id='amzn1.application-oa2-client.4566270efc6b46efa65dc239f81bafcf',
-        lwa_client_secret='amzn1.oa2-cs.v1.ffbe2dc4ed59de070bca8474b942af9d2501cc2f1541bf1e92a86ba7b21b3cfe'
-    )
 
-    catalog_client = Catalog(credentials=credentials)
-    res = catalog_client.get_item('B09SL1VL7L', MarketplaceId='A2EUQ1WTGCTBG2').payload
-    return res['AttributeSets'][0]['Brand']
 def handle_image(state, action, args, value):
     print("Handling image...")
     payload = value["args"][0]
@@ -78,7 +96,7 @@ def handle_image(state, action, args, value):
 
     temp_path = "temp.png"
 
-    # Write Data into temp file
+    # Write Data into temp file (OpenCV is unable to load from memory)
     image = PIL.Image.open(io.BytesIO(bytes))
     image.save(temp_path)
     # Load image file
@@ -87,21 +105,26 @@ def handle_image(state, action, args, value):
     except cv2.error as e:
         logging.error(f"Failed to read image file: {e}")
         return
+    process_image(state, img)
+    # Finish. Tempfile is removed.
 
-    # Capture image
-    if state.capture_image:
-        state.captured_image = cv2.imencode(".jpg", img)[1].tobytes()
-        state.show_capture_dialog = True
-        state.capture_image = False
+
+def button_retrain_clicked(state):
+    print("Retraining...")
+    train_face_recognizer(training_data_folder)
 
 
 webcam_md = """<|toggle|theme|>
 
 <container|container|part|
 
-# Webcam Photo Capture Demo
+# Face **recognition**{: .color-primary}
 
-This demo uses [Taipy](https://taipy.io/) and a [custom GUI component](https://docs.taipy.io/en/latest/manuals/gui/extension/) to capture photos from your webcam.
+This demo shows how to use [Taipy](https://taipy.io/) with a [custom GUI component](https://docs.taipy.io/en/latest/manuals/gui/extension/) to capture video from your webcam and do realtime face detection. What this application demonstrates:
+
+- How to build a complex custom UI component for Taipy.
+
+- How to detect and recognize faces in the image in real time using [OpenCV](https://opencv.org/).
 
 <br/>
 
@@ -109,15 +132,19 @@ This demo uses [Taipy](https://taipy.io/) and a [custom GUI component](https://d
 ## **Webcam**{: .color-primary} component
 
 <|text-center|part|
-<|webcam.Webcam|classname=webcam_capture|id=my_webcam|on_data_receive=handle_image|sampling_rate=100|>
+<|webcam.Webcam|faces={labeled_faces}|classname=face_detector|id=my_face_detector|on_data_receive=handle_image|sampling_rate=100|>
 
 <|Capture|button|on_action={lambda s: s.assign("capture_image", True)}|>
+<|RE-train|button|on_action=button_retrain_clicked|>
 >
 |card>
 |container>
 
-<|{show_capture_dialog}|dialog|labels=Validate;Cancel|on_action=on_action_captured_image|title=Add new photo|
-<|{captured_image}||width=300px|height=300px|image|>
+
+<|{show_capture_dialog}|dialog|labels=Validate;Cancel|on_action=on_action_captured_image|title=Add new training image|
+<|{captured_image}|image|width=300px|height=300px|>
+
+<|{captured_label}|input|>
 |>
 """
 
@@ -125,6 +152,8 @@ if __name__ == "__main__":
     # Create dir where the pictures will be stored
     if not training_data_folder.exists():
         training_data_folder.mkdir()
+
+    train_face_recognizer(training_data_folder)
 
     gui = Gui(webcam_md)
     gui.add_library(Webcam())
