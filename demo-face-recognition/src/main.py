@@ -233,7 +233,9 @@ Make the right choice, make *Nature's* ***Choice**{: .second-slogan}*
 <|{show_capture_dialog}|dialog|labels=Validate;Cancel|on_action=on_action_captured_image|title=Results|
 <|{captured_image}|image|width=300px|height=300px|>
 
-<|Product: {captured_brand} Nature Score: {captured_esg}|text|>
+<|Product: {captured_brand}|text|>
+
+<|Nature Score: {captured_esg}|text|>
 |>
 """
 
