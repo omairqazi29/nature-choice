@@ -1,5 +1,6 @@
 from taipy.gui import Gui
 from webcam import Webcam
+from pathlib import Path
 import cv2
 
 import PIL.Image
@@ -10,8 +11,10 @@ import uuid
 from pathlib import Path
 from demo.faces import detect_faces, recognize_face, train_face_recognizer
 
+import base64
+import requests
 
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
 training_data_folder = Path("images")
 
@@ -25,6 +28,21 @@ captured_image = None
 captured_label = ""
 
 
+# uploads the picture to a server so open ai can work with it
+def upload_picture(img_file):
+    print(img_file)
+    with open(img_file, "rb") as file:
+        url = "https://api.imgbb.com/1/upload"
+        payload = {
+            "expiry": 600,
+            "key": 'aeee233388a1e3d25fc67e1266807b69',
+            "image": base64.b64encode(file.read()),
+        }
+
+        res = requests.post(url, payload)
+        res_json = res.json()
+        print(res_json['data']['url'])
+
 def on_action_captured_image(state, id, action, payload):
     print("Captured image")
     choice = payload["args"][0]
@@ -35,7 +53,10 @@ def on_action_captured_image(state, id, action, payload):
         label = state.captured_label
         image_path = Path(training_data_folder, file_name)
         with image_path.open("wb") as f:
+            file_path = f.name
             f.write(img)
+            upload_picture(file_path)
+
         label_file_path = Path(training_data_folder, "data.csv")
         with label_file_path.open("a") as f:
             f.write(f"{file_name},{label}\n")
