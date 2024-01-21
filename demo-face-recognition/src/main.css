@@ -2,3 +2,37 @@
     width: 800px;
     height: 600px;
 }
+
+.title {
+    color: #EFE7DA;
+}
+
+.slogan {
+    color: #e55812;
+}
+
+.alt-title {
+    color: #95c623;
+}
+
+.sub_title {
+    color: #EFE7DA;
+    padding-left: 40px;
+}
+
+#canvas {
+    background: #002626;
+}
+
+#cam_card {
+    background: #0e4749;
+
+}
+
+.taipy-button {
+    color: #e55812;
+}
+
+#main_bg {
+    background: #002626;
+}

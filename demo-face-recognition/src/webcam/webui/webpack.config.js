@@ -42,7 +42,7 @@ module.exports = (env, options) => {
                 // where <TAIPY_DIR> is the installation directory for Taipy GUI on your filesystem.
                 // You may want to use the script 'find_taipy_gui_dir.py' to get this information.
                 // manifest: path.resolve('/home/aaryan/.local/lib/python3.10/site-packages/taipy/gui/webapp/taipy-gui-deps-manifest.json'),
-                manifest: path.resolve('/Users/omairqazi/projects.zip/nwHacks/nature-choice/.venv311/lib/python3.11/site-packages/taipy/gui/webapp/taipy-gui-deps-manifest.json'),
+                manifest: path.resolve('..\\..\\..\\..\\venv\\lib\\site-packages\\taipy\\gui\\webapp\\taipy-gui-deps-manifest.json'),
 				
                 name: 'TaipyGuiDependencies'
             }),
