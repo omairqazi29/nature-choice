@@ -5,7 +5,8 @@ import cv2
 import PIL.Image
 import io
 
-#import logging import uuid
+#import logging
+import uuid
 from pathlib import Path
 from demo.faces import detect_faces, recognize_face, train_face_recognizer
 
@@ -203,17 +204,16 @@ def button_retrain_clicked(state):
     #print("Retraining...")
     train_face_recognizer(training_data_folder)
 
+#<|toggle|theme|id=main_bg|>
 
-webcam_md = """<|toggle|theme|id=main_bg|>
-
-<container|container|part|
+webcam_md = """<container|container|part|
 
 # **Nature's**{: .title} **Choice**{: .alt-title}
 
 A lightweight, intuitive, and user-friendly website designed to facilitate eco-friendly decision-making.
 {: .slogan}
 
-Make the right choice, make *Nature's* ***Choice**{: .alt-title}*
+Make the right choice, make *Nature's* ***Choice**{: .second-slogan}*
 
 <br/>
 
@@ -233,7 +233,9 @@ Make the right choice, make *Nature's* ***Choice**{: .alt-title}*
 <|{show_capture_dialog}|dialog|labels=Validate;Cancel|on_action=on_action_captured_image|title=Results|
 <|{captured_image}|image|width=300px|height=300px|>
 
-<|{captured_brand}{captured_esg}|text|>
+<|Product: {captured_brand}|text|>
+
+<|Nature Score: {captured_esg}|text|>
 |>
 """
 
@@ -251,4 +253,5 @@ if __name__ == "__main__":
     }
     gui = Gui(webcam_md)
     gui.add_library(Webcam())
-    gui.run(port=9090, theme=my_theme, ngrok_token='2bGM59vzm6TpVAqZLMOcz5MGsiW_7KExkLGwxTsyWLMb82QeV')
+    #gui.run(port=9090, theme=my_theme, ngrok_token='2bGM59vzm6TpVAqZLMOcz5MGsiW_7KExkLGwxTsyWLMb82QeV')
+    gui.run(port=9090, theme=my_theme)

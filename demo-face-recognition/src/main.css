@@ -6,6 +6,8 @@
 
 .title {
     color: #EFE7DA;
+	margin: auto;
+	width: 50%;
 }
 
 .slogan {
@@ -14,6 +16,8 @@
 
 .alt-title {
     color: #95c623;
+	margin: auto;
+	width: 50%;
 }
 
 .sub_title {
@@ -45,7 +49,7 @@
 @media (max-width: 600px) {
     .face_detector>canvas {
         width: 100%; /* Set to 100% width for smaller screens */
-        height: auto; /* Allow the height to adjust proportionally */
+        height: 70%; /* Allow the height to adjust proportionally */
     }
 
     .sub_title {
