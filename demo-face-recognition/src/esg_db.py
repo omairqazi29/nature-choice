@@ -1,6 +1,7 @@
 import random
 
 from pymongo import MongoClient
+import csv
 import re
 
 # Replace this with your MongoDB Atlas connection string
@@ -44,3 +45,44 @@ def find_esg_value_by_name(name):
         esg_score = random.randint(0, 100)
         add_entry_to_collection(name, esg_score)
         return esg_score
+
+
+     
+#csv_file = '/home/aaryan/Desktop/nature-choice/ESG Data With Company Performance.csv'
+#
+## Open the CSV file for reading
+#with open(csv_file, 'r') as file:
+#    # Create a CSV reader object
+#    csv_reader = csv.reader(file)
+#    
+#    # Read the headers
+#    headers = next(csv_reader)
+#    
+#    # Initialize a list to store the values from the first and third columns
+#    values_list = []
+#    
+#    # Loop through the rows in the CSV file
+#    for row in csv_reader:
+#        first_column_value = row[0]  # Value from the first column (0-based index)
+#        third_column_value = row[4]  # Value from the third column (0-based index)
+#        
+#        # Append the values to the list
+#        values_list.append((first_column_value, third_column_value))
+#
+## Print the extracted values
+#for values in values_list:
+#    if values[0] is '' or values[1] is '':
+#        continue
+#
+#    esg_score = int(values[1])
+#
+#    if random.randint(1, 2) == 1:
+#        esg_score = min(100, esg_score + random.randint(1,5))
+#    else:
+#        esg_score = max(0, esg_score - random.randint(1,5))
+#
+#    if esg_score == 0:
+#        continue
+#
+#
+#    add_entry_to_collection(values[0], esg_score)

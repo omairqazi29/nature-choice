@@ -5,7 +5,7 @@ import cv2
 import PIL.Image
 import io
 
-#import logging
+import logging
 import uuid
 from pathlib import Path
 from demo.faces import detect_faces, recognize_face, train_face_recognizer
@@ -16,7 +16,7 @@ import requests
 from esg_db import *
 from gpt import *
 
-#logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 training_data_folder = Path("images")
 
@@ -30,100 +30,77 @@ captured_image = None
 captured_brand = ""
 captured_esg = ""
 
-width = 0
-height = 0
-
 # uploads the picture to a server so open ai can work with it
-def upload_picture(img_file):
-    print(img_file)
-    with open(img_file, "rb") as file:
-        url = "https://api.imgbb.com/1/upload"
-        payload = {
-            "expiry": 600,
-            "key": 'aeee233388a1e3d25fc67e1266807b69',
-            "image": base64.b64encode(file.read()),
-        }
+# def upload_picture(img_file):
+#     print(img_file)
+#     with open(img_file, "rb") as file:
+#         url = "https://api.imgbb.com/1/upload"
+#         payload = {
+#             "expiry": 600,
+#             "key": 'aeee233388a1e3d25fc67e1266807b69',
+#             "image": base64.b64encode(file.read()),
+#         }
+#
+#         res = requests.post(url, payload)
+#         res_json = res.json()
+#         print(res_json['data']['url'])
 
-        res = requests.post(url, payload)
-        res_json = res.json()
-        print(res_json['data']['url'])
-
-def trim_black_bars(image_path):
-    # Open the image
-    img = PIL.Image.open(image_path)
-
-    # Get the original dimensions
-    original_width, original_height = img.size
-
-    # Find the color of the bottom-right pixel (usually the background color)
-    background_color = img.getpixel((original_width - 1, original_height - 1))
-
-    # Initialize the new dimensions to the original dimensions
-    new_width = original_width
-    new_height = original_height
-
-    # Trim black bars from the right
-    for x in range(original_width - 1, -1, -1):
-        y = 0
-        if all(img.getpixel((x, y)) == background_color for y in range(original_height)):
-            new_width -= 1
-        else:
-            break
-
-    # Trim black bars from the bottom
-    for y in range(original_height - 1, -1, -1):
-        x = 0
-        if all(img.getpixel((x, y)) == background_color for x in range(original_width)):
-            new_height -= 1
-        else:
-            break
-
-    # Crop the image to remove the black bars
-    cropped_img = img.crop((0, 0, new_width, new_height))
-
-    # Save the resized image
-    cropped_img.save(image_path)
+# def trim_black_bars(image_path):
+#     # Open the image
+#     img = PIL.Image.open(image_path)
+#
+#     # Get the original dimensions
+#     original_width, original_height = img.size
+#
+#     # Find the color of the bottom-right pixel (usually the background color)
+#     background_color = img.getpixel((original_width - 1, original_height - 1))
+#
+#     # Initialize the new dimensions to the original dimensions
+#     new_width = original_width
+#     new_height = original_height
+#
+#     # Trim black bars from the right
+#     for x in range(original_width - 1, -1, -1):
+#         y = 0
+#         if all(img.getpixel((x, y)) == background_color for y in range(original_height)):
+#             new_width -= 1
+#         else:
+#             break
+#
+#     # Trim black bars from the bottom
+#     for y in range(original_height - 1, -1, -1):
+#         x = 0
+#         if all(img.getpixel((x, y)) == background_color for x in range(original_width)):
+#             new_height -= 1
+#         else:
+#             break
+#
+#     # Crop the image to remove the black bars
+#     cropped_img = img.crop((0, 0, new_width, new_height))
+#
+#     # Save the resized image
+#     cropped_img.save(image_path)
 
 def on_action_captured_image(state, id, action, payload):
-    # making sure the variables we update are the global ones
-    # global width
-    # global height
-    #
-    # #print("Captured image")
-    # choice = payload["args"][0]
-    # if choice == 0:
-    #     # Add image to training data:
-    #     img = state.captured_image
-    #     file_name = str(uuid.uuid4()) + ".jpg"
-    #     label = state.captured_label
-    #     image_path = Path(training_data_folder, file_name)
-    #     with image_path.open("wb") as f:
-    #         file_path = f.name
-    #         f.write(img)
-    #         upload_picture(file_path)
-    #         print(file_path)
-    #         try:
-    #             img_ = PIL.Image.open(file_path)
-    #             width = img_.width
-    #             height = img_.height
-    #         except Exception as e:
-    #             print("Could not open file")
-    #
-    #
-    #     label_file_path = Path(training_data_folder, "data.csv")
-    #     with label_file_path.open("a") as f:
-    #         f.write(f"{file_name},{label}\n")
-    #
+    choice = payload["args"][0]
+    if choice == 0:
+         # Add image to training data:
+        img = state.captured_image
+        file_name = str(uuid.uuid4()) + ".jpg"
+        # label = state.captured_label
+        image_path = Path(training_data_folder, file_name)
+        with image_path.open("wb") as f:
+            file_path = f.name
+            f.write(img)
+
+        label_file_path = Path(training_data_folder, "data.csv")
+        with label_file_path.open("a") as f:
+            f.write(f"{file_name},{label}\n")
+
     state.captured_image = None
     state.captured_brand = ""
     state.captured_esg = ""
     state.show_capture_dialog = False
-    #
-    # print(width)
-    # print(height)
-    #
-    # # brand = get_brand(image_path)
-    # # print(brand, find_esg_value_by_name(brand))
 
 
 
@@ -145,30 +122,18 @@ def process_image(state, frame):
         img = labeled_images[0][0]
         label = labeled_images[0][2]
         state.captured_image = cv2.imencode(".jpg", img)[1].tobytes()
-        state.captured_label = label
+        # state.captured_label = label
         state.show_capture_dialog = True
         state.capture_image = False
 
         #Somewhere here
         img = state.captured_image
         file_name = str(uuid.uuid4()) + ".jpg"
-        #label = state.captured_brand
+        label = state.captured_brand
         image_path = Path(training_data_folder, file_name)
         with image_path.open("wb") as f:
-            # file_path = f.name
             f.write(img)
-            #upload_picture(file_path)
-            #print(file_path)
-            # try:
-            #     img_ = PIL.Image.open(file_path)
-            #     width = img_.width
-            #     height = img_.height
-            # except Exception as e:
-            #     print("Could not open file")
 
-        # label_file_path = Path(training_data_folder, "data.csv")
-        # with label_file_path.open("a") as f:
-        #     f.write(f"{file_name},{label}\n")
         state.captured_brand = get_brand(image_path)
         state.captured_esg = find_esg_value_by_name(state.captured_brand)
         print(state.captured_brand, state.captured_esg)
