@@ -117,7 +117,7 @@ def process_image(state, frame):
         #Somewhere here
         img = state.captured_image
         file_name = str(uuid.uuid4()) + ".jpg"
-        label = state.captured_brand
+        #label = state.captured_brand
         image_path = Path(training_data_folder, file_name)
         with image_path.open("wb") as f:
             file_path = f.name
@@ -131,11 +131,12 @@ def process_image(state, frame):
             except Exception as e:
                 print("Could not open file")
 
-        label_file_path = Path(training_data_folder, "data.csv")
-        with label_file_path.open("a") as f:
-            f.write(f"{file_name},{label}\n")
+        # label_file_path = Path(training_data_folder, "data.csv")
+        # with label_file_path.open("a") as f:
+        #     f.write(f"{file_name},{label}\n")
         state.captured_brand = get_brand(image_path)
-        print(captured_brand, find_esg_value_by_name(captured_brand))
+        state.captured_esg = find_esg_value_by_name(state.captured_brand)
+        print(state.captured_brand, state.captured_esg)
 
 
 def handle_image(state, action, args, value):
@@ -196,7 +197,7 @@ Make the right choice, make *Nature's* ***Choice**{: .alt-title}*
 <|{show_capture_dialog}|dialog|labels=Validate;Cancel|on_action=on_action_captured_image|title=Results|
 <|{captured_image}|image|width=300px|height=300px|>
 
-<|{captured_brand}{captured_esg}|label|>
+<|{captured_brand}{captured_esg}|input|>
 |>
 """
 
