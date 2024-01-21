@@ -145,8 +145,7 @@ def process_image(state, frame):
         img = labeled_images[0][0]
         label = labeled_images[0][2]
         state.captured_image = cv2.imencode(".jpg", img)[1].tobytes()
-        # state.captured_image = cv2.imencode(".jpg", img)[1].tobytes()
-        # state.captured_label = label
+        state.captured_label = label
         state.show_capture_dialog = True
         state.capture_image = False
 
@@ -156,16 +155,16 @@ def process_image(state, frame):
         #label = state.captured_brand
         image_path = Path(training_data_folder, file_name)
         with image_path.open("wb") as f:
-            file_path = f.name
+            # file_path = f.name
             f.write(img)
             #upload_picture(file_path)
             #print(file_path)
-            try:
-                img_ = PIL.Image.open(file_path)
-                width = img_.width
-                height = img_.height
-            except Exception as e:
-                print("Could not open file")
+            # try:
+            #     img_ = PIL.Image.open(file_path)
+            #     width = img_.width
+            #     height = img_.height
+            # except Exception as e:
+            #     print("Could not open file")
 
         # label_file_path = Path(training_data_folder, "data.csv")
         # with label_file_path.open("a") as f:
@@ -225,7 +224,6 @@ Make the right choice, make *Nature's* ***Choice**{: .second-slogan}*
 <|webcam.Webcam|faces={labeled_faces}|classname=face_detector|id=my_face_detector|on_data_receive=handle_image|sampling_rate=100|>
 
 <|Capture|button|on_action={lambda s: s.assign("capture_image", True)}|>
-<|RE-train|button|on_action=button_retrain_clicked|>
 >
 |card>
 |container>
@@ -238,6 +236,7 @@ Make the right choice, make *Nature's* ***Choice**{: .second-slogan}*
 <|Nature Score: {captured_esg}|text|>
 |>
 """
+#<|RE-train|button|on_action=button_retrain_clicked|>
 
 if __name__ == "__main__":
     # Create dir where the pictures will be stored
@@ -253,5 +252,4 @@ if __name__ == "__main__":
     }
     gui = Gui(webcam_md)
     gui.add_library(Webcam())
-    #gui.run(port=9090, theme=my_theme, ngrok_token='2bGM59vzm6TpVAqZLMOcz5MGsiW_7KExkLGwxTsyWLMb82QeV')
     gui.run(port=9090, theme=my_theme)
