@@ -219,8 +219,9 @@ Make the right choice, make *Nature's* ***Choice**{: .alt-title}*
 <br/>
 
 <card|card p-half|part|id=cam_card|
-## **Webcam**{: .sub_title} component
-
+<|text-center|part|
+## **Scan Product**{: .sub_title}
+>
 <|text-center|part|
 <|webcam.Webcam|faces={labeled_faces}|classname=face_detector|id=my_face_detector|on_data_receive=handle_image|sampling_rate=100|>
 

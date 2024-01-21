@@ -1,3 +1,4 @@
+/* Default styles for larger screens */
 .face_detector>canvas {
     width: 800px;
     height: 600px;
@@ -26,7 +27,6 @@
 
 #cam_card {
     background: #0e4749;
-
 }
 
 .taipy-button {
@@ -35,4 +35,16 @@
 
 #main_bg {
     background: #002626;
+}
+
+/* Media query for screens smaller than 600px */
+@media (max-width: 600px) {
+    .face_detector>canvas {
+        width: 100%; /* Set to 100% width for smaller screens */
+        height: auto; /* Allow the height to adjust proportionally */
+    }
+
+    .sub_title {
+        padding-left: 20px; /* Adjust padding for smaller screens */
+    }
 }
