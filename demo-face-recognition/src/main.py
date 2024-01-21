@@ -9,6 +9,11 @@ import logging
 import uuid
 from pathlib import Path
 
+from serpapi import GoogleSearch
+
+from sp_api.api import Catalog
+from sp_api.base import Marketplaces
+
 logging.basicConfig(level=logging.DEBUG)
 
 training_data_folder = Path("images")
@@ -29,11 +34,42 @@ def on_action_captured_image(state, id, action, payload):
         image_path = Path(training_data_folder, file_name)
         with image_path.open("wb") as f:
             f.write(img)
+            getBrand(getASIN(file_name))
 
     state.captured_image = None
     state.show_capture_dialog = False
 
+def getASIN(file):
+    params = {
+    "engine": "google_lens",
+    "url": "https://i.imgur.com/Jydn4Wb.jpeg",
+    "api_key": "1e24556cfe05605f06f5fec311156615979876f6e1d3e9de4be1f6b9c39d7e35"
+    }
 
+    search = GoogleSearch(params)
+    results = search.get_dict()
+    knowledge_graph = results["knowledge_graph"]
+
+    amazon_link = None
+    for web in data["knowledge_graph"][0]["shopping_results"]:
+        if "amazon" in web["source"].lower(): \
+        amazon_link = web["link"]
+        break
+
+    asin = amazon_link.split('/dp/')[-1] if amazon_link else None
+
+    return asin
+
+def getBrand(asin):
+    credentials = dict(
+        refresh_token='Atzr|IwEBIIpVxgboyA6VhQqRnFSdocT4CgCzS85nr0KMt53T-moCph8akQbg-z9Ckrk3NNF4iyaRS8vIajYRiCSA1bTtTjaeGU9zdQaUVzIMHvEUtUIa6x-ZhvXc5KAhICp33vCo8dbTT_nVvOG1IS6RYFXMMpGeBHriVmIQne6Losv26DKYTzO54bRvxnE8X3NpzpB7H73qcgzM1_KslROGqUcF-qGJ_rsuNp4On5zskdml4LinKsGkWo3R9uK2QTqW6yGz8WP9jpJNq74t8xAHiNOqHqu8kTxFd1raLj9YzntZJls20ERz8GpFoGu8c8s0PfOwi_-MRV7XvSvWFT3oB1lBVtmi',
+        lwa_app_id='amzn1.application-oa2-client.4566270efc6b46efa65dc239f81bafcf',
+        lwa_client_secret='amzn1.oa2-cs.v1.ffbe2dc4ed59de070bca8474b942af9d2501cc2f1541bf1e92a86ba7b21b3cfe'
+    )
+
+    catalog_client = Catalog(credentials=credentials)
+    res = catalog_client.get_item('B09SL1VL7L', MarketplaceId='A2EUQ1WTGCTBG2').payload
+    return res['AttributeSets'][0]['Brand']
 def handle_image(state, action, args, value):
     print("Handling image...")
     payload = value["args"][0]
@@ -81,7 +117,7 @@ This demo uses [Taipy](https://taipy.io/) and a [custom GUI component](https://d
 |container>
 
 <|{show_capture_dialog}|dialog|labels=Validate;Cancel|on_action=on_action_captured_image|title=Add new photo|
-<|{captured_image}|image|>
+<|{captured_image}||width=300px|height=300px|image|>
 |>
 """
 
