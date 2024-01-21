@@ -21,7 +21,21 @@
 	width: 50%;
 }
 
-.sub_title {
+.sub_title {.face_detector > canvas {
+    width: 100%;
+    height: auto;
+    max-width: 600px;
+    max-height: 600px;
+}
+
+@media only screen and (max-width: 768px) {
+    .face_detector > canvas {
+        max-width: 100%;
+        max-height: 100%;
+    }
+}
+￼
+
     color: #EFE7DA;
     padding-left: 40px;
 }
@@ -72,7 +86,8 @@
 /* Media query for screens smaller than 600px */
 @media (max-width: 600px) {
     .face_detector>canvas {
-        width: 100%; /* Set to 100% width for smaller screens */
+        overflow: visible;
+        width: 80%; /* Set to 100% width for smaller screens */
         height: 70%; /* Allow the height to adjust proportionally */
     }
 
