@@ -1,14 +1,9 @@
 import base64
 
 import requests
-import os
 from openai import OpenAI
-from dotenv import load_dotenv
 
-load_dotenv()
-
-#api_key = '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'
-api_key = os.getenv("OPENAI_API_KEY")
+api_key = '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'
 client = OpenAI(api_key=api_key)
 
 # Set your OpenAI API key here
