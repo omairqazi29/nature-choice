@@ -1,13 +1,14 @@
 import base64
+import os
 
 import requests
 from openai import OpenAI
 
-api_key = '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'
+
 client = OpenAI(api_key=api_key)
 
 # Set your OpenAI API key here
-#image_path = "./test.jpg"
+image_path = "./test.jpg"
 
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:

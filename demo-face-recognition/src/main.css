@@ -41,6 +41,29 @@
     color: #e55812;
 }
 
+.loading-spinner {
+  border: 8px solid #e55812; /* Border color of the spinner */
+  border-top: 8px solid transparent;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite; /* Animation duration and type */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Display the loading spinner when the loading flag is set */
+[data-loading="true"] .loading-container {
+  display: block;
+}
+
 #main_bg {
     background: #002626;
 }
@@ -55,4 +78,15 @@
     .sub_title {
         padding-left: 20px; /* Adjust padding for smaller screens */
     }
+}
+
+.ctnr {
+  display: d-flex;
+}
+
+.item {
+  /* Additional styling for each item if needed */
+  margin: 5px;
+  padding: 10px;
+  border: 1px solid #ccc;
 }

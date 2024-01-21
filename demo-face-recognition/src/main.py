@@ -207,14 +207,16 @@ def handle_image(state, action, args, value):
 
 #<|toggle|theme|id=main_bg|>
 
-webcam_md = """<container|container|part|
+webcam_md = """
+<container|container|part|
 
 # **Nature's**{: .title} **Choice**{: .alt-title}
+<|{"./images/nature.png"}|image|class_name=item|>
 
-A lightweight, intuitive, and user-friendly website designed to facilitate eco-friendly decision-making.
+A lightweight, intuitive, and user friendly website designed to facilitate eco-friendly decision making.
 {: .slogan}
 
-Make the right choice, make *Nature's* ***Choice**{: .second-slogan}*
+Make the right choice, make *Nature's* ***Choice**{: .alt-title}*
 
 <br/>
 
@@ -223,6 +225,7 @@ Make the right choice, make *Nature's* ***Choice**{: .second-slogan}*
 ## **Scan Product**{: .sub_title}
 >
 <|text-center|part|
+
 <|webcam.Webcam|faces={labeled_faces}|classname=face_detector|id=my_face_detector|on_data_receive=handle_image|sampling_rate=100|>
 
 <|Capture|button|on_action={lambda s: s.assign("capture_image", True)}|>
@@ -230,7 +233,7 @@ Make the right choice, make *Nature's* ***Choice**{: .second-slogan}*
 |card>
 |container>
 
-<|{show_capture_dialog}|dialog|labels=Validate;Cancel|on_action=on_action_captured_image|title=Results|
+<|{show_capture_dialog}|dialog|labels=OK|class=custom-label|on_action=on_action_captured_image|title= Sustainability Score|
 <|{captured_image}|image|width=300px|height=300px|>
 
 <|Product: {captured_brand}|text|>
@@ -238,7 +241,6 @@ Make the right choice, make *Nature's* ***Choice**{: .second-slogan}*
 <|Nature Score: {captured_esg}|text|>
 |>
 """
-#<|RE-train|button|on_action=button_retrain_clicked|>
 
 if __name__ == "__main__":
     # Create dir where the pictures will be stored
