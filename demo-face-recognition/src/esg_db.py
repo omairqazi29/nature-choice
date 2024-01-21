@@ -41,6 +41,7 @@ def find_esg_value_by_name(name):
     if document:
         return document.get("esg_score")
     else:
+        if 'sorry' in name.lower(): return 0
         esg_score = random.randint(0, 100)
         add_entry_to_collection(name, esg_score)
         return esg_score

@@ -8,7 +8,7 @@ import io
 #import logging
 import uuid
 from pathlib import Path
-from demo.faces import detect_faces, recognize_face, train_face_recognizer
+#from demo.faces import detect_faces, recognize_face, train_face_recognizer
 
 import base64
 import requests
@@ -34,19 +34,19 @@ width = 0
 height = 0
 
 # uploads the picture to a server so open ai can work with it
-def upload_picture(img_file):
-    print(img_file)
-    with open(img_file, "rb") as file:
-        url = "https://api.imgbb.com/1/upload"
-        payload = {
-            "expiry": 600,
-            "key": 'aeee233388a1e3d25fc67e1266807b69',
-            "image": base64.b64encode(file.read()),
-        }
-
-        res = requests.post(url, payload)
-        res_json = res.json()
-        print(res_json['data']['url'])
+# def upload_picture(img_file):
+#     print(img_file)
+#     with open(img_file, "rb") as file:
+#         url = "https://api.imgbb.com/1/upload"
+#         payload = {
+#             "expiry": 600,
+#             "key": 'aeee233388a1e3d25fc67e1266807b69',
+#             "image": base64.b64encode(file.read()),
+#         }
+#
+#         res = requests.post(url, payload)
+#         res_json = res.json()
+#         print(res_json['data']['url'])
 
 def trim_black_bars(image_path):
     # Open the image
@@ -129,23 +129,25 @@ def on_action_captured_image(state, id, action, payload):
 
 def process_image(state, frame):
     #print("Processing image...")
-    found = detect_faces(frame)
-
-    labeled_images = []
-    for rect, img in found:
-        (label, _) = recognize_face(img)
-        labeled_images.append((img, rect, label))
+    # found = detect_faces(frame)
+    #
+    # labeled_images = []
+    # for rect, img in found:
+    #     (label, _) = recognize_face(img)
+    #     labeled_images.append((img, rect, label))
 
     # Return this to the UI component so that it can display a rect around recognized faces:
     # state.labeled_faces = [str([*rect, label]) for (_, rect, label) in labeled_images]
 
     # Capture image (actually we consider only the first detected face)
-    if state.capture_image and len(labeled_images) > 0:
+    # if state.capture_image and len(labeled_images) > 0:
+    if state.capture_image:
         # print(labeled_images[0][0])
-        img = labeled_images[0][0]
-        label = labeled_images[0][2]
+        # img = labeled_images[0][0]
+        img = frame
+        # label = labeled_images[0][2]
         state.captured_image = cv2.imencode(".jpg", img)[1].tobytes()
-        state.captured_label = label
+        #state.captured_brand = label
         state.show_capture_dialog = True
         state.capture_image = False
 
@@ -199,9 +201,9 @@ def handle_image(state, action, args, value):
     # Finish. Tempfile is removed.
 
 
-def button_retrain_clicked(state):
+#def button_retrain_clicked(state):
     #print("Retraining...")
-    train_face_recognizer(training_data_folder)
+    #train_face_recognizer(training_data_folder)
 
 #<|toggle|theme|id=main_bg|>
 
