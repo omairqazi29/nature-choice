@@ -1,3 +1,6 @@
+import math
+
+from pandocfilters import Math
 from taipy.gui import Gui
 from webcam import Webcam
 from pathlib import Path
@@ -7,8 +10,6 @@ import io
 
 import logging
 import uuid
-from pathlib import Path
-#from demo.faces import detect_faces, recognize_face, train_face_recognizer
 
 import base64
 import requests
@@ -46,25 +47,25 @@ captured_esg = ""
 #         print(res_json['data']['url'])
 
 def on_action_captured_image(state, id, action, payload):
-    choice = payload["args"][0]
-    if choice == 0:
-         # Add image to training data:
-        img = state.captured_image
-        file_name = str(uuid.uuid4()) + ".jpg"
-        # label = state.captured_label
-        image_path = Path(training_data_folder, file_name)
-        with image_path.open("wb") as f:
-            file_path = f.name
-            f.write(img)
-
-        label_file_path = Path(training_data_folder, "data.csv")
-        with label_file_path.open("a") as f:
-            f.write(f"{file_name},{label}\n")
-
     state.captured_image = None
     state.captured_brand = ""
     state.captured_esg = ""
     state.show_capture_dialog = False
+
+    # choice = payload["args"][0]
+    # if choice == 0:
+    #      # Add image to training data:
+    #     img = state.captured_image
+    #     file_name = str(uuid.uuid4()) + ".jpg"
+    #     # label = state.captured_label
+    #     # image_path = Path(training_data_folder, file_name)
+    #     # with image_path.open("wb") as f:
+    #     #     # file_path = f.name
+    #     #     f.write(img)
+
+        # label_file_path = Path(training_data_folder, "data.csv")
+        # with label_file_path.open("a") as f:
+        #     f.write(f"{file_name},{label}\n")
 
 
 
@@ -103,10 +104,14 @@ def process_image(state, frame):
         state.captured_brand = get_brand(image_path)
         if 'sorry' in state.captured_brand.lower():
             state.captured_brand = 'Unknown'
-            state.captured_esg = 0
+            state.captured_esg = 'Unknown'
         else:
             state.captured_esg = find_esg_value_by_name(state.captured_brand)
-        print(state.captured_brand, state.captured_esg)
+            captured_esg_value = int(state.captured_esg)
+            stars = math.ceil(captured_esg_value / 20)
+            emoji = '🌲'
+            state.captured_esg = emoji * stars + " (" + str(captured_esg_value) + ")"
+            print(state.captured_brand, state.captured_esg)
 
 
 def handle_image(state, action, args, value):
