@@ -44,6 +44,42 @@ def upload_picture(img_file):
         res_json = res.json()
         print(res_json['data']['url'])
 
+def trim_black_bars(image_path):
+    # Open the image
+    img = PIL.Image.open(image_path)
+
+    # Get the original dimensions
+    original_width, original_height = img.size
+
+    # Find the color of the bottom-right pixel (usually the background color)
+    background_color = img.getpixel((original_width - 1, original_height - 1))
+
+    # Initialize the new dimensions to the original dimensions
+    new_width = original_width
+    new_height = original_height
+
+    # Trim black bars from the right
+    for x in range(original_width - 1, -1, -1):
+        y = 0
+        if all(img.getpixel((x, y)) == background_color for y in range(original_height)):
+            new_width -= 1
+        else:
+            break
+
+    # Trim black bars from the bottom
+    for y in range(original_height - 1, -1, -1):
+        x = 0
+        if all(img.getpixel((x, y)) == background_color for x in range(original_width)):
+            new_height -= 1
+        else:
+            break
+
+    # Crop the image to remove the black bars
+    cropped_img = img.crop((0, 0, new_width, new_height))
+
+    # Save the resized image
+    cropped_img.save(image_path)
+
 def on_action_captured_image(state, id, action, payload):
     # making sure the variables we update are the global ones
     global width
@@ -60,14 +96,15 @@ def on_action_captured_image(state, id, action, payload):
         with image_path.open("wb") as f:
             file_path = f.name
             f.write(img)
-            upload_picture(file_path)
-            print(file_path)
-            try:
-                img_ = PIL.Image.open(file_path)
-                width = img_.width
-                height = img_.height
-            except Exception as e:
-                print("Could not open file")
+        #     trim_black_bars(file_path)
+        #     upload_picture(file_path)
+        #     print(file_path)
+        #     try:
+        #         img_ = PIL.Image.open(file_path)
+        #         width = img_.width
+        #         height = img_.height
+        #     except Exception as e:
+        #         print("Could not open file")
 
 
         label_file_path = Path(training_data_folder, "data.csv")
@@ -117,7 +154,7 @@ def handle_image(state, action, args, value):
     # Write Data into temp file (OpenCV is unable to load from memory)
     image = PIL.Image.open(io.BytesIO(bytes))
     image.save(temp_path)
-    image_path = Path(training_data_folder, 'test')
+    image_path = Path(training_data_folder, 'test.jpg')
     with image_path.open("wb") as f:
         f.write(image.tobytes())
 
@@ -166,7 +203,7 @@ This demo shows how to use [Taipy](https://taipy.io/) with a [custom GUI compone
 <|{show_capture_dialog}|dialog|labels=Validate;Cancel|on_action=on_action_captured_image|title=Add new training image|
 <|{captured_image}|image|width=300px|height=300px|>
 
-<|{captured_label}|input|>
+<|{captured_label}|text|>
 |>
 """
 

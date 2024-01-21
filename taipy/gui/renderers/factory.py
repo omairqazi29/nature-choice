@@ -248,7 +248,7 @@ class _Factory:
             element_name="Input",
             attributes=attrs,
         )
-        ._set_input_type("text", True)
+        ._set_input_type("text", False)
         .set_value_and_default()
         ._set_propagate()
         .set_attributes(

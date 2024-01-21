@@ -4,10 +4,11 @@ import re
 
 from openai import OpenAI
 
-client = OpenAI(api_key='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')
+client = OpenAI(api_key='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')
 
 # Set your OpenAI API key here
-image_path = "./test.jpg"
+image_path = "./xbox-360.jpg"
+#image_path = "./images/1fc3e147-0792-4c32-8644-353c9c56ed48.jpg"
 
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
@@ -33,7 +34,7 @@ def get_esg_score(brand):
         response = client.chat.completions.create(model="gpt-4-vision-preview", max_tokens = 100,  # Replace with the appropriate model, such as GPT-4 if available
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": f"Find the ESG score of {brand} and return the best score in the format [brand (string), esg category (Good/Average/Bad) (string), esg score out of 100 (integer)]. in case of you error in finding, return error in finding the esg"}
+            {"role": "user", "content": f"I want, in one word, either the brand name itself or the name of the heirarchical oldest parent company of {brand}."}
         ])
         return response.choices[0].message.content.strip()
     except Exception as e:
@@ -41,11 +42,12 @@ def get_esg_score(brand):
         return "Error in getting ESG score"
 
 def get_brand():
-    base64_image = encode_image("test.jpg")
+    #base64_image = encode_image("download.jpg")
+    base64_image = encode_image(image_path)
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer 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"
+        "Authorization": f"Bearer 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"
     }
     payload = {
         "model": "gpt-4-vision-preview",
@@ -83,13 +85,13 @@ if __name__ == "__main__":
     #esg_score = get_brand()
 
     print(f"Brand: {brand}, ESG Score: {esg_score}")
-    esg_match = re.search(r'\[.*?\]', esg_score)
+    #esg_match = re.search(r'\[.*?\]', esg_score)
 
-    if esg_match:
-        esg_score_str = match.group(0)
-        # Convert the matched string to a list
-        # This involves removing the square brackets and splitting the string by comma
-        esg_score_array = esg_score_str.strip('[]').split(', ')
-        print(esg_score_array)
-    else:
-        print("No ESG score array found in the text.")
+    #if esg_match:
+    #    esg_score_str = match.group(0)
+    #    # Convert the matched string to a list
+    #    # This involves removing the square brackets and splitting the string by comma
+    #    esg_score_array = esg_score_str.strip('[]').split(', ')
+    #    print(esg_score_array)
+    #else:
+    #    print("No ESG score array found in the text.")
