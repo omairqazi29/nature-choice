@@ -4,11 +4,12 @@ import os
 import requests
 from openai import OpenAI
 
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
-openai_api_key = os.getenv("OPENAI_API_KEY")
-client = OpenAI(api_key=openai_api_key)
+# load_dotenv()
+# openai_api_key = os.getenv("OPENAI_API_KEY")
+api_key = '<apikeyhere>'
+client = OpenAI(api_key=api_key)
 
 # Set your OpenAI API key here
 image_path = "./test.jpg"
