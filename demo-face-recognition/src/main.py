@@ -172,7 +172,7 @@ Make the right choice, make *Nature's* ***Choice**{: .alt-title}*
 |container>
 
 <|{show_capture_dialog}|dialog|labels=OK|class=custom-label|on_action=on_action_captured_image|title= Sustainability Score|
-<|{captured_image}|image|width=300px|height=300px|>
+<|{captured_image}|image|width=100px|height=100px|>
 
 <|Product: {captured_brand}|text|>
 
