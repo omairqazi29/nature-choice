@@ -251,4 +251,5 @@ if __name__ == "__main__":
     }
     gui = Gui(webcam_md)
     gui.add_library(Webcam())
-    gui.run(port=9090, theme=my_theme, ngrok_token='2bGM59vzm6TpVAqZLMOcz5MGsiW_7KExkLGwxTsyWLMb82QeV')
+    #gui.run(port=9090, theme=my_theme, ngrok_token='2bGM59vzm6TpVAqZLMOcz5MGsiW_7KExkLGwxTsyWLMb82QeV')
+    gui.run(port=9090, theme=my_theme)

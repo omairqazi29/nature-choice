@@ -41,7 +41,7 @@
 @media (max-width: 600px) {
     .face_detector>canvas {
         width: 100%; /* Set to 100% width for smaller screens */
-        height: auto; /* Allow the height to adjust proportionally */
+        height: 70%; /* Allow the height to adjust proportionally */
     }
 
     .sub_title {
