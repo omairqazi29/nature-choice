@@ -1,14 +1,13 @@
 import base64
-import requests
-import re
 
+import requests
 from openai import OpenAI
 
-client = OpenAI(api_key='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')
+api_key = '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'
+client = OpenAI(api_key=api_key)
 
 # Set your OpenAI API key here
-image_path = "./xbox-360.jpg"
-#image_path = "./images/1fc3e147-0792-4c32-8644-353c9c56ed48.jpg"
+#image_path = "./test.jpg"
 
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
@@ -29,25 +28,25 @@ def encode_image(image_path):
 #         return "Error in brand identification"
 
 
-def get_esg_score(brand):
-    try:
-        response = client.chat.completions.create(model="gpt-4-vision-preview", max_tokens = 100,  # Replace with the appropriate model, such as GPT-4 if available
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": f"I want, in one word, either the brand name itself or the name of the heirarchical oldest parent company of {brand}."}
-        ])
-        return response.choices[0].message.content.strip()
-    except Exception as e:
-        print(f"Error: {e}")
-        return "Error in getting ESG score"
 
-def get_brand():
-    #base64_image = encode_image("download.jpg")
+# def get_esg_score(brand):
+#     try:
+#         response = client.chat.completions.create(model="gpt-4-vision-preview", max_tokens = 100,  # Replace with the appropriate model, such as GPT-4 if available
+#         messages=[
+#             {"role": "system", "content": "You are a helpful assistant."},
+#             {"role": "user", "content": f"What is ESG score of the {brand}'s parent company using sustainalytics"}
+#         ])
+#         return response.choices[0].message.content.strip()
+#     except Exception as e:
+#         print(f"Error: {e}")
+#         return "Error in getting ESG score"
+
+def get_brand(image_path):
     base64_image = encode_image(image_path)
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer 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"
+        "Authorization": f"Bearer {api_key}"
     }
     payload = {
         "model": "gpt-4-vision-preview",
@@ -58,7 +57,7 @@ def get_brand():
                 "content": [
                     {
                         "type": "text",
-                        "text": "From the image identify the brand. return only the brand"
+                        "text": "From the image identify the brand. return only the name"
                     },
                     {
                         "type": "image_url",
@@ -78,20 +77,26 @@ def get_brand():
         return response.json()['choices'][0]['message']['content']
 
 # Example usage
-if __name__ == "__main__":
-    description = "https://pbs.twimg.com/media/FLhJVtSXoAY2x-q.jpg:large"
-    brand = get_brand()
-    esg_score = get_esg_score(brand) if brand else "Brand not identified"
-    #esg_score = get_brand()
-
-    print(f"Brand: {brand}, ESG Score: {esg_score}")
-    #esg_match = re.search(r'\[.*?\]', esg_score)
-
-    #if esg_match:
-    #    esg_score_str = match.group(0)
-    #    # Convert the matched string to a list
-    #    # This involves removing the square brackets and splitting the string by comma
-    #    esg_score_array = esg_score_str.strip('[]').split(', ')
-    #    print(esg_score_array)
-    #else:
-    #    print("No ESG score array found in the text.")
+# if __name__ == "__main__":
+#     description = "https://pbs.twimg.com/media/FLhJVtSXoAY2x-q.jpg:large"
+#     brand = get_brand()
+#     try:
+#         esg_score = find_esg_value_by_name(brand)
+#     except:
+#         esg_score = random.randint(0, 100)
+#         add_entry_to_collection(brand, esg_score)
+#     #esg_score = get_brand()
+#
+#     # print(get_esg(brand))
+#
+#     print(f"Brand: {brand}, ESG Score: {esg_score}")
+#     # esg_match = re.search(r'\[.*?\]', esg_score)
+#     #
+#     # if esg_match:
+#     #     esg_score_str = match.group(0)
+#     #     # Convert the matched string to a list
+#     #     # This involves removing the square brackets and splitting the string by comma
+#     #     esg_score_array = esg_score_str.strip('[]').split(', ')
+#     #     print(esg_score_array)
+#     # else:
+#     #     print("No ESG score array found in the text.")

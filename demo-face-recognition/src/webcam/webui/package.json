@@ -18,8 +18,9 @@
         "webpack-cli": "^5.0.2"
     },
     "dependencies": {
+        "gui": "file:../../../../taipy/gui",
         "react": "^18.2.0",
-        "taipy-gui": "file:../../../../../../../.conda/envs/face/lib/site-packages/taipy/gui/webapp"
+        "taipy-gui": "file:../../../../venv/lib/site-packages/taipy/gui/webapp"
     },
     "scripts": {
         "build:dev": "webpack --mode development",
