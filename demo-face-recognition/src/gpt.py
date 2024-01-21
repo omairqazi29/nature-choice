@@ -28,6 +28,7 @@ def encode_image(image_path):
 #         return "Error in brand identification"
 
 
+
 # def get_esg_score(brand):
 #     try:
 #         response = client.chat.completions.create(model="gpt-4-vision-preview", max_tokens = 100,  # Replace with the appropriate model, such as GPT-4 if available
