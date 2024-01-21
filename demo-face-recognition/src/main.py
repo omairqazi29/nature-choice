@@ -5,8 +5,7 @@ import cv2
 import PIL.Image
 import io
 
-import logging
-import uuid
+#import logging import uuid
 from pathlib import Path
 from demo.faces import detect_faces, recognize_face, train_face_recognizer
 
@@ -158,8 +157,8 @@ def process_image(state, frame):
         with image_path.open("wb") as f:
             file_path = f.name
             f.write(img)
-            upload_picture(file_path)
-            print(file_path)
+            #upload_picture(file_path)
+            #print(file_path)
             try:
                 img_ = PIL.Image.open(file_path)
                 width = img_.width
@@ -234,7 +233,7 @@ Make the right choice, make *Nature's* ***Choice**{: .alt-title}*
 <|{show_capture_dialog}|dialog|labels=Validate;Cancel|on_action=on_action_captured_image|title=Results|
 <|{captured_image}|image|width=300px|height=300px|>
 
-<|{captured_brand}{captured_esg}|input|>
+<|{captured_brand}{captured_esg}|text|>
 |>
 """
 
@@ -252,4 +251,4 @@ if __name__ == "__main__":
     }
     gui = Gui(webcam_md)
     gui.add_library(Webcam())
-    gui.run(port=9090, theme=my_theme)
+    gui.run(port=9090, theme=my_theme, ngrok_token='2bGM59vzm6TpVAqZLMOcz5MGsiW_7KExkLGwxTsyWLMb82QeV')
