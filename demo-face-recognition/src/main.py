@@ -5,7 +5,8 @@ import cv2
 import PIL.Image
 import io
 
-#import logging import uuid
+#import logging
+import uuid
 from pathlib import Path
 from demo.faces import detect_faces, recognize_face, train_face_recognizer
 
@@ -232,7 +233,7 @@ Make the right choice, make *Nature's* ***Choice**{: .second-slogan}*
 <|{show_capture_dialog}|dialog|labels=Validate;Cancel|on_action=on_action_captured_image|title=Results|
 <|{captured_image}|image|width=300px|height=300px|>
 
-<|{captured_brand}{captured_esg}|text|>
+<|Product: {captured_brand} Nature Score: {captured_esg}|text|>
 |>
 """
 
