@@ -1,7 +1,8 @@
 /* Default styles for larger screens */
 .face_detector>canvas {
-    width: 600px;
-    height: 600px;
+    width: 200px;
+    height: 200px;
+    padding: 20px 10px;
 }
 
 .title {
