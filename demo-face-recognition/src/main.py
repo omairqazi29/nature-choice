@@ -101,7 +101,11 @@ def process_image(state, frame):
             f.write(img)
 
         state.captured_brand = get_brand(image_path)
-        state.captured_esg = find_esg_value_by_name(state.captured_brand)
+        if 'sorry' in state.captured_brand.lower():
+            state.captured_brand = 'Unknown'
+            state.captured_esg = 0
+        else:
+            state.captured_esg = find_esg_value_by_name(state.captured_brand)
         print(state.captured_brand, state.captured_esg)
 
 
